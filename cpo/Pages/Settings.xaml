@@ -1,0 +1,86 @@
+﻿<Page
+    x:Class="Celin.Pages.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:doc="using:Celin.Doc"
+    xmlns:local="using:Celin"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:VisibilityConverter x:Key="vc" />
+    </Page.Resources>
+
+    <Page.DataContext>
+        <doc:Settings x:Name="ViewModel" />
+    </Page.DataContext>
+    <Grid
+        Padding="40"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=0}">
+            <local:TextControl
+                x:Name="BaseUrl"
+                FieldValue="{x:Bind ViewModel.BaseUrl, Mode=TwoWay}"
+                Header="AIS Url:"
+                MessageList="{x:Bind ViewModel.UrlMessages}"
+                PlaceHolderText="Enter AIS Url"
+                Readonly="{x:Bind Busy, Mode=OneWay}"
+                ValueTest="{x:Bind ViewModel.RxUrl}" />
+        </StackPanel>
+        <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=1}">
+            <local:TextControl
+                x:Name="Username"
+                FieldValue="{x:Bind ViewModel.Username, Mode=TwoWay}"
+                MessageList="{x:Bind ViewModel.RequiredMessages}"
+                Header="User:"
+                PlaceHolderText="Enter User Name"
+                Readonly="{x:Bind Busy, Mode=OneWay}"
+                ValueTest="{x:Bind ViewModel.RxRequired}" />
+            <PasswordBox
+                IsEnabled="{x:Bind Busy.Equals(x:False)}"
+                Password="{x:Bind ViewModel.Password, Mode=TwoWay}"
+                PlaceholderText="Enter Password" />
+            <ToggleSwitch
+                Margin="0,20,0,0"
+                Header="Remember User"
+                IsOn="{x:Bind ViewModel.RememberUser, Mode=TwoWay}" />
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="0"
+                Width="120"
+                HorizontalAlignment="Left"
+                AccessKey="P"
+                Click="Previous_Click"
+                Content="Previous"
+                IsEnabled="{x:Bind IsFirstPage.Equals(x:False), Mode=OneWay}"
+                Style="{ThemeResource AccentButtonStyle}" />
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <ProgressRing
+                    Grid.Column="1"
+                    Margin="0,0,5,0"
+                    IsActive="{x:Bind Busy, Mode=OneWay}" />
+                <Button
+                    Grid.Column="2"
+                    Width="120"
+                    AccessKey="N"
+                    Click="Next_Click"
+                    Content="{x:Bind NextCaption, Mode=OneWay}"
+                    Style="{ThemeResource AccentButtonStyle}" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>
