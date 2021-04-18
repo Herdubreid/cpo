@@ -8,9 +8,8 @@
 
     <StackPanel>
         <TextBox
-            Name="EditBox"
             Header="{x:Bind Header}"
-            IsEnabled="{x:Bind Readonly.Equals(x:False)}"
+            IsEnabled="{x:Bind Readonly.Equals(x:False), Mode=OneWay}"
             PlaceholderText="{x:Bind PlaceHolderText, Mode=OneTime}"
             Text="{x:Bind FieldValue, Mode=TwoWay}" />
         <InfoBar

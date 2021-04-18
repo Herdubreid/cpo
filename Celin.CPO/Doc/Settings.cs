@@ -28,6 +28,16 @@ namespace Celin.Doc
             "OK",
             "Url format: http[s]://<server>/<path>/"
         };
+        bool isConfigured;
+        public bool IsConfigured
+        {
+            get => isConfigured;
+            set
+            {
+                SetProperty(ref isConfigured, value);
+                Store.SetValue(nameof(IsConfigured), IsConfigured);
+            }
+        }
         string baseUrl;
         public string BaseUrl
         {
@@ -38,7 +48,13 @@ namespace Celin.Doc
         public bool RememberUser
         {
             get => rememberUser;
-            set => SetProperty(ref rememberUser, value);
+            set
+            {
+                SetProperty(ref rememberUser, value);
+                Store.SetValue(nameof(RememberUser), RememberUser);
+                Store.SetValue(nameof(Username), RememberUser ? Username : string.Empty);
+                Store.SetValue(nameof(Password), RememberUser ? Password : string.Empty);
+            }
         }
         string username;
         public string Username
@@ -55,7 +71,22 @@ namespace Celin.Doc
         public string Password
         {
             get => password;
-            set => SetProperty(ref password, value);
+            set
+            {
+                SetProperty(ref password, value);
+                E1.AuthRequest.password = value;
+                Store.SetValue(nameof(Password), RememberUser ? value : string.Empty);
+            }
+        }
+        string versionP4310;
+        public string VersionP4310
+        {
+            get => versionP4310;
+            set
+            {
+                SetProperty(ref versionP4310, value);
+                Store.SetValue(nameof(VersionP4310), value);
+            }
         }
         public void Save()
         {
@@ -72,10 +103,11 @@ namespace Celin.Doc
         readonly IStore Store = Ioc.Default.GetRequiredService<IStore>();
         public Settings()
         {
-            BaseUrl = Store.GetValue<string>(nameof(BaseUrl));
-            Username = Store.GetValue<string>(nameof(Username));
-            Password = Store.GetValue<string>(nameof(Password));
-            RememberUser = Store.GetValue<bool>(nameof(RememberUser));
+            baseUrl = Store.GetValue<string>(nameof(BaseUrl));
+            username = Store.GetValue<string>(nameof(Username));
+            password = Store.GetValue<string>(nameof(Password));
+            rememberUser = Store.GetValue<bool>(nameof(RememberUser));
+            versionP4310 = Store.GetValue<string>(nameof(VersionP4310)) ?? "ZJDE";
         }
     }
 }

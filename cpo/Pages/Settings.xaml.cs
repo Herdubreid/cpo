@@ -74,12 +74,48 @@ namespace Celin.Pages
         {
             PageNo--;
         }
-        CancellationTokenSource Cancel { get; set; }
+        #region VersionP4310
+        bool isSelecting;
+        private void VersionP4310_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            var row = args.SelectedItem as Helpers.DataRow;
+            sender.Text = row.ToString("F983051_VERS");
+            sender.Description = row.ToString("F983051_JD");
+            isSelecting = true;
+        }
+        private void VersionP4310_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (isSelecting)
+            {
+                isSelecting = false;
+                return;
+            }
+            dd.Debounce(500, async (o) =>
+            {
+                var asb = o as AutoSuggestBox;
+                if (!string.IsNullOrEmpty(asb.Text.Trim()))
+                {
+                    cancel?.Cancel();
+                    cancel = new CancellationTokenSource();
+                    try
+                    {
+                        var rs = await ViewModel.E1.RequestAsync<F983051.Response>(new F983051.Request(asb.Text.Trim()), cancel.Token);
+                        asb.ItemsSource = rs.fs_DATABROWSE_F983051.data.gridData.rowset;
+                        asb.Description = rs.fs_DATABROWSE_F983051.data.gridData.summary.records == 0 ? "No matching records" : string.Empty;
+                    }
+                    catch (Exception ex)
+                    {
+                        asb.Description = ex.Message;
+                    }
+                }
+            }, sender);
+        }
+        #endregion
         private async void Next_Click(object sender, RoutedEventArgs e)
         {
             if (Busy)
             {
-                Cancel?.Cancel();
+                cancel?.Cancel();
                 return;
             }
             ViewModel.Save();
@@ -87,33 +123,36 @@ namespace Celin.Pages
             switch (PageNo)
             {
                 case 0:
-                    if (BaseUrl.Validate())
+                    if (baseUrl.Validate())
                     {
                         try
                         {
-                            Cancel = new CancellationTokenSource();
-                            await ViewModel.E1.DefaultConfigurationAsync(Cancel.Token);
+                            cancel = new CancellationTokenSource();
+                            await ViewModel.E1.DefaultConfigurationAsync(cancel.Token);
                             PageNo++;
                         }
                         catch (Exception ex)
                         {
-                            BaseUrl.SetError(ex.Message);
+                            baseUrl.SetError(ex.Message);
                         }
                     }
                     break;
                 case 1:
-                    if (Username.Validate())
+                    if (username.Validate())
                     {
                         try
                         {
-                            Cancel = new CancellationTokenSource();
-                            await ViewModel.E1.AuthenticateAsync(Cancel.Token);
+                            cancel = new CancellationTokenSource();
+                            await ViewModel.E1.AuthenticateAsync(cancel.Token);
+                            PageNo++;
                         }
                         catch (Exception ex)
                         {
-                            Username.SetError(ex.Message);
+                            username.SetError(ex.Message);
                         }
                     }
+                    break;
+                case 2:
                     break;
                 default:
                     PageNo++;
@@ -121,9 +160,15 @@ namespace Celin.Pages
             }
             Busy = false;
         }
+        CancellationTokenSource cancel { get; set; }
+        readonly DebounceDispatcher dd = new DebounceDispatcher();
+        readonly Doc.Settings ViewModel = Ioc.Default.GetRequiredService<Doc.Settings>();
         public Settings()
         {
-            this.InitializeComponent();
+            PageNo = 2;
+            InitializeComponent();
+            VersionLookup.DataRequest = async args
+                => await ViewModel.E1.RequestAsync<F983051.Response>(new F983051.Request(args.Item1), args.Item2);
         }
     }
 }

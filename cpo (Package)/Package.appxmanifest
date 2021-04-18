@@ -9,7 +9,7 @@
   <Identity
     Name="440c6672-7d26-429b-a72c-aeb2389be9dc"
     Publisher="CN=fbrag"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>cpo (Package)</DisplayName>

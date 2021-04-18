@@ -9,8 +9,9 @@
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controls\LookupControl.xaml" />
     <None Remove="Controls\TextControl.xaml" />
-    <None Remove="Pages\NavigationContent.xaml" />
+    <None Remove="Pages\NavContent.xaml" />
     <None Remove="Pages\Settings.xaml" />
   </ItemGroup>
 
@@ -28,7 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Pages\NavigationContent.xaml">
+    <Page Update="Controls\LookupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\NavContent.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

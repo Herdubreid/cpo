@@ -25,6 +25,7 @@ namespace Celin
                 })
                 .AddSingleton<IStore>(store)
                 .AddSingleton<E1>()
+                .AddSingleton<Doc.Settings>()
                 .BuildServiceProvider());
 
             var settings = new Doc.Settings();

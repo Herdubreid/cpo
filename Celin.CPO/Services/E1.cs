@@ -11,13 +11,16 @@ namespace Celin.Services
 {
     public class E1 : AIS.Server
     {
+        public bool IsValid { get; set; }
+        readonly IStore store;
         public E1()
             : base(Ioc.Default.GetService<IStore>().GetValue<string>(nameof(Settings.BaseUrl)),
                    Ioc.Default.GetService<ILogger<E1>>())
         {
-            var set = Ioc.Default.GetService<IStore>();
-            AuthRequest.username = set.GetValue<string>(nameof(Settings.Username));
-            AuthRequest.password = set.GetValue<string>(nameof(Settings.Password));
+            store = Ioc.Default.GetService<IStore>();
+            IsValid = store.GetValue<bool>(nameof(IsValid));
+            AuthRequest.username = store.GetValue<string>(nameof(Settings.Username));
+            AuthRequest.password = store.GetValue<string>(nameof(Settings.Password));
         }
     }
 }

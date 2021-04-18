@@ -1,0 +1,50 @@
+﻿<UserControl
+    x:Class="Celin.LookupControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid
+        Name="contentRoot"
+        BorderBrush="{ThemeResource TextBoxBorderThemeBrush}"
+        BorderThickness="1">
+        <AutoSuggestBox
+            x:Name="Box"
+            Width="{x:Bind BoxWidth}"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            BorderThickness="0"
+            GotFocus="OnGotFocus"
+            IsEnabled="{x:Bind Readonly.Equals(x:False), Mode=OneWay}"
+            ItemTemplate="{x:Bind ItemTemplate}"
+            LostFocus="OnLostFocus"
+            PlaceholderText="{x:Bind PlaceHolderText}"
+            SuggestionChosen="SuggestionChosen"
+            Text="{x:Bind FieldValue, Mode=TwoWay}"            
+            TextChanged="TextChanged" />
+        <TextBlock
+            Width="{x:Bind LabelWidth}"
+            Padding="4,0,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Text="{x:Bind Label, Mode=OneWay}" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Informational" />
+                <VisualState x:Name="Success" />
+                <VisualState x:Name="Warning">
+                    <VisualState.Setters>
+                        <Setter Target="ContentRoot.Background" Value="{ThemeResource InfoBarWarningSeverityBackgroundBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Error">
+                    <VisualState.Setters>
+                        <Setter Target="ContentRoot.Background" Value="{ThemeResource InfoBarErrorSeverityBackgroundBrush}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

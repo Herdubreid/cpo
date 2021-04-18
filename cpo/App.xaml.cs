@@ -44,6 +44,7 @@ namespace Celin
                 })
                 .AddSingleton<Services.IStore, Services.Store>()
                 .AddSingleton<Services.E1>()
+                .AddSingleton<Doc.Settings>()
                 .BuildServiceProvider());
             InitializeComponent();
         }

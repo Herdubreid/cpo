@@ -20,11 +20,11 @@ namespace Celin.Services
         {
             if (Storage.ContainsKey(key))
             {
-                Storage[key] = value;
+                Storage[key] = value ?? default(T);
             }
             else
             {
-                Storage.Add(key, value);
+                Storage.Add(key, value as object);
             }
         }
     }
