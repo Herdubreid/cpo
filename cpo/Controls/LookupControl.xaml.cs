@@ -1,6 +1,4 @@
-﻿using Celin.Services;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Linq;
@@ -17,19 +15,18 @@ namespace Celin
     {
         public DataTemplate ItemTemplate { get; set; }
         public string PlaceHolderText { get; set; }
-        public string Header { get; set; }
         public Func<(string, CancellationToken), Task<Helpers.ILookupResponse>> DataRequest { get; set; }
         public void SetLabel(string label, InfoBarSeverity severity = InfoBarSeverity.Informational)
         {
             Label = label;
-            SetSeverity(severity);
+            Severity = severity;
         }
-        public void SetSeverity(InfoBarSeverity severity)
-            => VisualStateManager.GoToState(this, severity.ToString("g"), false);
         public double LabelWidth { get; set; } = double.NaN;
         public double BoxWidth { get; set; } = double.NaN;
         public async Task<bool> Validate()
         {
+            if (Severity == InfoBarSeverity.Success)
+                return true;
             cancel?.Cancel();
             cancel?.Dispose();
             cancel = new CancellationTokenSource();
@@ -57,14 +54,27 @@ namespace Celin
                 return false;
             }
         }
-        #region Readonly
-        public bool Readonly
+        #region Severity
+        public InfoBarSeverity Severity
         {
-            get => (bool)GetValue(ReadonlyProperty);
-            set => SetValue(ReadonlyProperty, value);
+            get => (InfoBarSeverity)GetValue(SeverityProperty);
+            set
+            {
+                SetValue(SeverityProperty, value);
+                VisualStateManager.GoToState(this, value.ToString("g"), false);
+            }
         }
-        public static readonly DependencyProperty ReadonlyProperty =
-            DependencyProperty.Register(nameof(Readonly), typeof(bool), typeof(LookupControl), new PropertyMetadata(false));
+        public static readonly DependencyProperty SeverityProperty =
+            DependencyProperty.Register(nameof(Severity), typeof(InfoBarSeverity), typeof(LookupControl), new PropertyMetadata(default(InfoBarSeverity)));
+        #endregion
+        #region IsReadonly
+        public bool IsReadonly
+        {
+            get => (bool)GetValue(IsReadonlyProperty);
+            set => SetValue(IsReadonlyProperty, value);
+        }
+        public static readonly DependencyProperty IsReadonlyProperty =
+            DependencyProperty.Register(nameof(IsReadonly), typeof(bool), typeof(LookupControl), new PropertyMetadata(false));
         #endregion
         #region FieldValue
         public string FieldValue
@@ -84,7 +94,6 @@ namespace Celin
         public static readonly DependencyProperty LabelProperty =
             DependencyProperty.Register(nameof(Label), typeof(string), typeof(LookupControl), new PropertyMetadata(default(string)));
         #endregion
-        readonly E1 e1 = Ioc.Default.GetRequiredService<E1>();
         readonly DebounceDispatcher dd = new DebounceDispatcher();
         CancellationTokenSource cancel;
         bool isSelecting;
@@ -114,8 +123,16 @@ namespace Celin
                     {
                         var rs = await DataRequest.Invoke((box.Text.Trim().ToUpper(), cancel.Token));
                         box.ItemsSource = rs.GetRows();
-                        if (rs.GetSummary().records == 0)
-                            SetLabel("No matching records!", InfoBarSeverity.Warning);
+                        switch (rs.GetSummary().records)
+                        {
+                            case 0:
+                                SetLabel("No matching records!", InfoBarSeverity.Warning);
+                                break;
+                            case 1:
+                                SetLabel(rs.GetRows().First().Label, InfoBarSeverity.Success);
+                                FieldValue = rs.GetRows().First().Key;
+                                break;
+                        }
                     }
                     catch (OperationCanceledException) { }
                     catch (Exception ex)

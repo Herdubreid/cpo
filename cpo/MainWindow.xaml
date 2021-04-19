@@ -8,5 +8,5 @@
     xmlns:pages="using:Celin.Pages"
     mc:Ignorable="d">
 
-    <pages:NavContent/>
+    <pages:NavContent Grid.Row="1"/>
 </Window>

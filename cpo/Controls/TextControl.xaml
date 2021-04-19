@@ -9,7 +9,7 @@
     <StackPanel>
         <TextBox
             Header="{x:Bind Header}"
-            IsEnabled="{x:Bind Readonly.Equals(x:False), Mode=OneWay}"
+            IsEnabled="{x:Bind IsReadonly.Equals(x:False), Mode=OneWay}"
             PlaceholderText="{x:Bind PlaceHolderText, Mode=OneTime}"
             Text="{x:Bind FieldValue, Mode=TwoWay}" />
         <InfoBar

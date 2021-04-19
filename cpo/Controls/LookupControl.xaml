@@ -17,7 +17,7 @@
             VerticalAlignment="Center"
             BorderThickness="0"
             GotFocus="OnGotFocus"
-            IsEnabled="{x:Bind Readonly.Equals(x:False), Mode=OneWay}"
+            IsEnabled="{x:Bind IsReadonly.Equals(x:False), Mode=OneWay}"
             ItemTemplate="{x:Bind ItemTemplate}"
             LostFocus="OnLostFocus"
             PlaceholderText="{x:Bind PlaceHolderText}"

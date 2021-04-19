@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Controls\LookupControl.xaml" />
     <None Remove="Controls\TextControl.xaml" />
+    <None Remove="Pages\Browse.xaml" />
     <None Remove="Pages\NavContent.xaml" />
     <None Remove="Pages\Settings.xaml" />
   </ItemGroup>
@@ -26,6 +27,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Celin.CPO\Celin.CPO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\Browse.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

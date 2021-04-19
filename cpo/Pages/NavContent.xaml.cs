@@ -22,55 +22,28 @@ using Windows.Foundation.Collections;
 
 namespace Celin.Pages
 {
-    class MenuItem : DependencyObject
-    {
-        public string Name { get; set; }
-        public Symbol Symbol { get; set; }
-        public string Tooltip { get; set; }
-        #region IsEnabled
-        public bool IsEnabled
-        {
-            get => (bool)GetValue(IsEnabledProperty);
-            set => SetValue(IsEnabledProperty, value);
-        }
-        public static readonly DependencyProperty IsEnabledProperty =
-            DependencyProperty.Register("IsEnabled", typeof(bool), typeof(MenuItem), new PropertyMetadata(false));
-        #endregion
-    }
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class NavContent : Page
     {
-        ObservableCollection<MenuItem> menuItems = new ObservableCollection<MenuItem>
-        {
-            new MenuItem { Name = "Browse", Symbol = Symbol.Home, Tooltip = "Open Orders" }
-        };
         private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
             if (args.IsSettingsInvoked)
             {
-                contentFrame.NavigateToType(typeof(Settings), null, new FrameNavigationOptions
-                {
-                    IsNavigationStackEnabled = false,
-                });
-            }
-        }
-        public NavContent()
-        {
-            InitializeComponent();
-            var settings = Ioc.Default.GetRequiredService<Doc.Settings>();
-            if (settings.IsConfigured)
-            {
-                foreach (var m in menuItems) m.IsEnabled = true;
+                Nav.Settings.PageNo = 0;
+                Nav.CurrentPage = Nav.Settings;
             }
             else
             {
-                contentFrame.NavigateToType(typeof(Settings), null, new FrameNavigationOptions
-                {
-                    IsNavigationStackEnabled = false
-                });
+                var m = sender.SelectedItem as Services.MenuItem;
+                Nav.CurrentPage = m.Page;
             }
+        }
+        readonly Services.Navigate Nav = Ioc.Default.GetRequiredService<Services.Navigate>();
+        public NavContent()
+        {
+            InitializeComponent();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Celin.Doc
             set
             {
                 SetProperty(ref isConfigured, value);
-                Store.SetValue(nameof(IsConfigured), IsConfigured);
+                Store.SetValue(nameof(IsConfigured), value);
             }
         }
         string baseUrl;
@@ -107,7 +107,8 @@ namespace Celin.Doc
             username = Store.GetValue<string>(nameof(Username));
             password = Store.GetValue<string>(nameof(Password));
             rememberUser = Store.GetValue<bool>(nameof(RememberUser));
-            versionP4310 = Store.GetValue<string>(nameof(VersionP4310)) ?? "ZJDE";
+            versionP4310 = Store.GetValue<string>(nameof(VersionP4310));
+            isConfigured = Store.GetValue<bool>(nameof(IsConfigured));
         }
     }
 }

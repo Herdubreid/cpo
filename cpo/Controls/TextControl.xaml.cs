@@ -28,14 +28,14 @@ namespace Celin
             Message = MessageList.ElementAtOrDefault((int)Severity) ?? string.Empty;
             return Severity == InfoBarSeverity.Success;
         }
-        #region Readonly
-        public bool Readonly
+        #region IsReadonly
+        public bool IsReadonly
         {
-            get => (bool)GetValue(ReadonlyProperty);
-            set => SetValue(ReadonlyProperty, value);
+            get => (bool)GetValue(IsReadonlyProperty);
+            set => SetValue(IsReadonlyProperty, value);
         }
-        public static readonly DependencyProperty ReadonlyProperty =
-            DependencyProperty.Register(nameof(Readonly), typeof(bool), typeof(TextControl), new PropertyMetadata(0));
+        public static readonly DependencyProperty IsReadonlyProperty =
+            DependencyProperty.Register(nameof(IsReadonly), typeof(bool), typeof(TextControl), new PropertyMetadata(0));
         #endregion
         #region FieldValue
         public string FieldValue
