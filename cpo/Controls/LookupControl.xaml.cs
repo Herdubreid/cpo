@@ -1,6 +1,9 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Celin.Helpers;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,38 +25,25 @@ namespace Celin
             Severity = severity;
         }
         public double LabelWidth { get; set; } = double.NaN;
-        public double BoxWidth { get; set; } = double.NaN;
+        public double ASBWidth { get; set; } = double.NaN;
         public async Task<bool> Validate()
         {
             if (Severity == InfoBarSeverity.Success)
                 return true;
-            cancel?.Cancel();
-            cancel?.Dispose();
-            cancel = new CancellationTokenSource();
-            try
-            {
-                var rs = await DataRequest.Invoke((FieldValue, cancel.Token));
-                if (rs.GetSummary().records > 0 && rs.GetRows().First().Key.Equals(FieldValue, StringComparison.OrdinalIgnoreCase))
-                {
-                    SetLabel(rs.GetRows().First().Label);
-                    return true;
-                }    
-                else
-                {
-                    SetLabel("Field invalid!", InfoBarSeverity.Error);
-                    return false;
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                return false;
-            }
-            catch (Exception ex)
-            {
-                SetLabel(ex.Message, InfoBarSeverity.Error);
-                return false;
-            }
+
+            await LookupRequest(FieldValue);
+
+            return Severity == InfoBarSeverity.Success;
         }
+        #region LookupResult
+        public IEnumerable<DataRow> LookupResult
+        {
+            get => (IEnumerable<DataRow>)GetValue(LookupResultProperty);
+            set => SetValue(LookupResultProperty, value);
+        }
+        public static readonly DependencyProperty LookupResultProperty =
+            DependencyProperty.Register(nameof(LookupResult), typeof(IEnumerable<DataRow>), typeof(LookupControl), new PropertyMetadata(Enumerable.Empty<DataRow>()));
+        #endregion
         #region Severity
         public InfoBarSeverity Severity
         {
@@ -113,42 +103,63 @@ namespace Celin
             }
             dd.Debounce(500, async (ob) =>
             {
-                var box = ob as AutoSuggestBox;
-                if (!string.IsNullOrWhiteSpace(box.Text))
+                var asb = ob as AutoSuggestBox;
+                if (!string.IsNullOrWhiteSpace(asb.Text))
                 {
-                    cancel?.Cancel();
-                    cancel?.Dispose();
-                    cancel = new CancellationTokenSource();
-                    try
-                    {
-                        var rs = await DataRequest.Invoke((box.Text.Trim().ToUpper(), cancel.Token));
-                        box.ItemsSource = rs.GetRows();
-                        switch (rs.GetSummary().records)
-                        {
-                            case 0:
-                                SetLabel("No matching records!", InfoBarSeverity.Warning);
-                                break;
-                            case 1:
-                                SetLabel(rs.GetRows().First().Label, InfoBarSeverity.Success);
-                                FieldValue = rs.GetRows().First().Key;
-                                break;
-                        }
-                    }
-                    catch (OperationCanceledException) { }
-                    catch (Exception ex)
-                    {
-                        SetLabel(ex.Message, InfoBarSeverity.Error);
-                    }
+                    await LookupRequest(asb.Text);
                 }
             }, sender);
         }
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
-            (sender as Control).Width = contentRoot.ActualWidth;
+            (sender as Control).Width = ContentRoot.ActualWidth;
         }
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            (sender as Control).Width = BoxWidth;
+            (sender as Control).Width = ASBWidth;
+        }
+        async Task LookupRequest(string startsWith)
+        {
+            cancel?.Cancel();
+            cancel?.Dispose();
+            cancel = new CancellationTokenSource();
+            try
+            {
+                var rs = await DataRequest.Invoke((startsWith.Trim().ToUpper(), cancel.Token));
+                switch (rs.GetSummary().records)
+                {
+                    case 0:
+                        SetLabel("No matching record!", InfoBarSeverity.Warning);
+                        break;
+                    case 1:
+                        SetLabel(rs.GetRows().First().Label, InfoBarSeverity.Success);
+                        FieldValue = rs.GetRows().First().Key;
+                        break;
+                    default:
+                        LookupResult = rs.GetRows();
+                        if (rs.GetRows().First().Key.Equals(startsWith, StringComparison.OrdinalIgnoreCase))
+                        {
+                            Severity = InfoBarSeverity.Success;
+                        }
+                        else
+                        {
+                            if (ASB.FocusState == FocusState.Unfocused)
+                            {
+                                SetLabel("Required", InfoBarSeverity.Warning);
+                            }
+                            else
+                            {
+                                Severity = InfoBarSeverity.Informational;
+                            }
+                        }
+                        break;
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                SetLabel(ex.Message, InfoBarSeverity.Error);
+            }
         }
         public LookupControl()
         {

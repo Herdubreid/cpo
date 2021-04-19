@@ -23,7 +23,6 @@
     </Page.Resources>
 
     <NavigationView
-        Grid.Row="1"
         IsBackButtonVisible="Collapsed"
         ItemInvoked="NavigationView_ItemInvoked"
         MenuItemTemplate="{StaticResource Menu}"

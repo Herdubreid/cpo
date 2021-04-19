@@ -7,22 +7,23 @@
     mc:Ignorable="d">
 
     <Grid
-        Name="contentRoot"
+        Name="ContentRoot"
         BorderBrush="{ThemeResource TextBoxBorderThemeBrush}"
         BorderThickness="1">
         <AutoSuggestBox
-            x:Name="Box"
-            Width="{x:Bind BoxWidth}"
+            x:Name="ASB"
+            Width="{x:Bind ASBWidth}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             BorderThickness="0"
             GotFocus="OnGotFocus"
             IsEnabled="{x:Bind IsReadonly.Equals(x:False), Mode=OneWay}"
             ItemTemplate="{x:Bind ItemTemplate}"
+            ItemsSource="{x:Bind LookupResult, Mode=OneWay}"
             LostFocus="OnLostFocus"
             PlaceholderText="{x:Bind PlaceHolderText}"
             SuggestionChosen="SuggestionChosen"
-            Text="{x:Bind FieldValue, Mode=TwoWay}"            
+            Text="{x:Bind FieldValue, Mode=TwoWay}"
             TextChanged="TextChanged" />
         <TextBlock
             Width="{x:Bind LabelWidth}"

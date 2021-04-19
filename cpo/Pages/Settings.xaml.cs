@@ -1,5 +1,4 @@
-﻿using Celin.Services;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -128,8 +127,8 @@ namespace Celin.Pages
             Busy = false;
         }
         CancellationTokenSource cancel { get; set; }
-        readonly Doc.Settings ViewModel = Ioc.Default.GetRequiredService<Doc.Settings>();
-        readonly Services.Navigate Nav = Ioc.Default.GetRequiredService<Services.Navigate>();
+        Doc.Settings ViewModel => Ioc.Default.GetRequiredService<Doc.Settings>();
+        Services.Navigate Nav => Ioc.Default.GetRequiredService<Services.Navigate>();
         public Settings()
         {
             InitializeComponent();

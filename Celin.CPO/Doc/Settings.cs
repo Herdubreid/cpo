@@ -99,8 +99,8 @@ namespace Celin.Doc
             Store.SetValue(nameof(Username), RememberUser ? Username : string.Empty);
             Store.SetValue(nameof(Password), RememberUser ? Password : string.Empty);
         }
-        public readonly E1 E1 = Ioc.Default.GetRequiredService<E1>();
-        readonly IStore Store = Ioc.Default.GetRequiredService<IStore>();
+        public E1 E1 => Ioc.Default.GetRequiredService<E1>();
+        IStore Store => Ioc.Default.GetRequiredService<IStore>();
         public Settings()
         {
             baseUrl = Store.GetValue<string>(nameof(BaseUrl));

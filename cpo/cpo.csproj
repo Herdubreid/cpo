@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Controls\LookupControl.xaml" />
+    <None Remove="Controls\StatusControl.xaml" />
     <None Remove="Controls\TextControl.xaml" />
     <None Remove="Pages\Browse.xaml" />
     <None Remove="Pages\NavContent.xaml" />
@@ -27,6 +28,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Celin.CPO\Celin.CPO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\StatusControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

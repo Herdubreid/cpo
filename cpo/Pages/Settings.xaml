@@ -2,22 +2,20 @@
     x:Class="Celin.Pages.Settings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:celin="using:Celin.Helpers"
+    xmlns:coll="using:System.Collections.Generic"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:doc="using:Celin.Doc"
     xmlns:f98051="using:Celin.F983051"
-    xmlns:local="using:Celin"
-    xmlns:celin="using:Celin.Helpers"
-    xmlns:coll="using:System.Collections.Generic"
     xmlns:json="using:System.Text.Json"
+    xmlns:local="using:Celin"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
     <Page.Resources>
         <local:VisibilityConverter x:Key="vc" />
         <DataTemplate x:Key="vLookup" x:DataType="celin:DataRow">
-            <StackPanel
-                Orientation="Horizontal"
-                Width="500">
+            <StackPanel Width="500" Orientation="Horizontal">
                 <TextBlock Text="{x:Bind ToString('F983051_VERS')}" />
                 <TextBlock Padding="4,0,0,0" Text="{x:Bind ToString('F983051_JD')}" />
             </StackPanel>
@@ -37,9 +35,9 @@
                 x:Name="baseUrl"
                 FieldValue="{x:Bind ViewModel.BaseUrl, Mode=TwoWay}"
                 Header="AIS Url:"
+                IsReadonly="{x:Bind Busy, Mode=OneWay}"
                 MessageList="{x:Bind ViewModel.UrlMessages}"
                 PlaceHolderText="Enter AIS Url"
-                IsReadonly="{x:Bind Busy, Mode=OneWay}"
                 ValueTest="{x:Bind ViewModel.RxUrl}" />
         </StackPanel>
         <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=1}">
@@ -47,9 +45,9 @@
                 x:Name="username"
                 FieldValue="{x:Bind ViewModel.Username, Mode=TwoWay}"
                 Header="User:"
+                IsReadonly="{x:Bind Busy, Mode=OneWay}"
                 MessageList="{x:Bind ViewModel.RequiredMessages}"
                 PlaceHolderText="Enter User Name"
-                IsReadonly="{x:Bind Busy, Mode=OneWay}"
                 ValueTest="{x:Bind ViewModel.RxRequired}" />
             <PasswordBox
                 IsEnabled="{x:Bind Busy.Equals(x:False)}"
@@ -63,11 +61,12 @@
         <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=2}">
             <local:LookupControl
                 x:Name="versionLookup"
-                IsReadonly="{x:Bind Busy}"
-                PlaceHolderText="Enter P4310 Version"
-                ItemTemplate="{StaticResource vLookup}"
+                ASBWidth="124"
                 FieldValue="{x:Bind ViewModel.VersionP4310, Mode=TwoWay}"
-                LabelWidth="350"/>
+                IsReadonly="{x:Bind Busy}"
+                ItemTemplate="{StaticResource vLookup}"
+                LabelWidth="324"
+                PlaceHolderText="Enter P4310 Version" />
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
