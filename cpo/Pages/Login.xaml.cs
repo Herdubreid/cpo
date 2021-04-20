@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -23,9 +24,21 @@ namespace Celin.Pages
     /// </summary>
     public sealed partial class Login : Page
     {
+
+        #region Busy
+        public bool Busy
+        {
+            get { return (bool)GetValue(BusyProperty); }
+            set { SetValue(BusyProperty, value); }
+        }
+        public static readonly DependencyProperty BusyProperty =
+            DependencyProperty.Register(nameof(Busy), typeof(bool), typeof(Login), new PropertyMetadata(default(bool)));
+        #endregion
+        Doc.Settings Settings => Ioc.Default.GetRequiredService<Doc.Settings>();
+        Services.Navigate Nav => Ioc.Default.GetRequiredService<Services.Navigate>();
         public Login()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

@@ -41,11 +41,11 @@ namespace Celin.Services
         public static readonly DependencyProperty CurrentPageProperty =
             DependencyProperty.Register(nameof(CurrentPage), typeof(Page), typeof(Navigate), new PropertyMetadata(default(Page)));
         #endregion
-        public void NavigateToPage(Type page, object para = null)
+        public void ToPage(Type page, object para = null)
         {
             ContentFrame.Navigate(page, para, new EntranceNavigationTransitionInfo());
         }
-        public void NavigateTo(NavigationView nav, NavigationViewItemInvokedEventArgs args)
+        public void OnNavigate(NavigationView nav, NavigationViewItemInvokedEventArgs args)
         {
             if (args.IsSettingsInvoked)
             {
@@ -58,20 +58,7 @@ namespace Celin.Services
             else
             {
                 var m = nav.SelectedItem as MenuItem;
-                NavigateToPage(m.Page);
-            }
-        }
-        public Navigate()
-        {
-            var settings = Ioc.Default.GetRequiredService<Doc.Settings>();
-            if (settings.IsConfigured)
-            {
-                foreach (var m in MenuItems) m.IsEnabled = true;
-                //CurrentPage = MenuItems.First().Page;
-            }
-            else
-            {
-                CurrentPage = Settings;
+                ToPage(m.Page);
             }
         }
     }

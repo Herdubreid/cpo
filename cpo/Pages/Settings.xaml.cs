@@ -99,7 +99,7 @@ namespace Celin.Pages
                         }
                     }
                     break;
-                case 1:
+/*                case 1:
                     if (username.Validate())
                     {
                         try
@@ -113,12 +113,12 @@ namespace Celin.Pages
                             username.SetError(ex.Message);
                         }
                     }
-                    break;
+                    break;*/
                 case 2:
                     if (await versionLookup.Validate())
                     {
                         ViewModel.IsConfigured = true;
-                        Nav.NavigateToPage(Nav.MenuItems.First().Page);
+                        Nav.ToPage(Nav.MenuItems.First().Page);
                     }
                     break;
                 default:

@@ -41,22 +41,6 @@
                 ValueTest="{x:Bind ViewModel.RxUrl}" />
         </StackPanel>
         <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=1}">
-            <local:TextControl
-                x:Name="username"
-                FieldValue="{x:Bind ViewModel.Username, Mode=TwoWay}"
-                Header="User:"
-                IsReadonly="{x:Bind Busy, Mode=OneWay}"
-                MessageList="{x:Bind ViewModel.RequiredMessages}"
-                PlaceHolderText="Enter User Name"
-                ValueTest="{x:Bind ViewModel.RxRequired}" />
-            <PasswordBox
-                IsEnabled="{x:Bind Busy.Equals(x:False)}"
-                Password="{x:Bind ViewModel.Password, Mode=TwoWay}"
-                PlaceholderText="Enter Password" />
-            <ToggleSwitch
-                Margin="0,20,0,0"
-                Header="Remember User"
-                IsOn="{x:Bind ViewModel.RememberUser, Mode=TwoWay}" />
         </StackPanel>
         <StackPanel MaxWidth="450" Visibility="{x:Bind PageNo, Mode=OneWay, Converter={StaticResource vc}, ConverterParameter=2}">
             <local:LookupControl

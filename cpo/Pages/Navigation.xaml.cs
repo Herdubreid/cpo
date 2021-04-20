@@ -16,6 +16,16 @@ namespace Celin.Pages
         {
             InitializeComponent(); 
             Nav.ContentFrame = ContentFrame;
+            var settings = Ioc.Default.GetRequiredService<Doc.Settings>();
+            if (settings.IsConfigured)
+            {
+                Nav.ToPage(typeof(Login));
+            }
+            else
+            {
+                foreach (var m in Nav.MenuItems) m.IsEnabled = true;
+                Nav.ToPage(typeof(Settings));
+            }
         }
     }
 }

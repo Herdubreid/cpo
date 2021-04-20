@@ -14,14 +14,13 @@
             <NavigationViewItem
                 Content="{x:Bind Name}"
                 IsEnabled="{x:Bind IsEnabled, Mode=OneWay}"
-                ToolTipService.ToolTip="{x:Bind Tooltip}">
-            </NavigationViewItem>
+                ToolTipService.ToolTip="{x:Bind Tooltip}" />
         </DataTemplate>
     </Page.Resources>
 
     <NavigationView
         IsBackButtonVisible="Collapsed"
-        ItemInvoked="{x:Bind Nav.NavigateTo}"
+        ItemInvoked="{x:Bind Nav.OnNavigate}"
         MenuItemTemplate="{StaticResource Menu}"
         MenuItemsSource="{x:Bind Nav.MenuItems}"
         PaneDisplayMode="Top">
