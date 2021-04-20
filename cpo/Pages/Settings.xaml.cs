@@ -90,7 +90,7 @@ namespace Celin.Pages
                         try
                         {
                             cancel = new CancellationTokenSource();
-                            await ViewModel.E1.DefaultConfigurationAsync(cancel.Token);
+                            await ViewModel.DefaultConfigurationAsync(cancel.Token);
                             PageNo++;
                         }
                         catch (Exception ex)
@@ -105,7 +105,7 @@ namespace Celin.Pages
                         try
                         {
                             cancel = new CancellationTokenSource();
-                            await ViewModel.E1.AuthenticateAsync(cancel.Token);
+                            await ViewModel.AuthenticateAsync(cancel.Token);
                             PageNo++;
                         }
                         catch (Exception ex)
@@ -118,7 +118,7 @@ namespace Celin.Pages
                     if (await versionLookup.Validate())
                     {
                         ViewModel.IsConfigured = true;
-                        Nav.CurrentPage = Nav.MenuItems.First().Page;
+                        Nav.NavigateToPage(Nav.MenuItems.First().Page);
                     }
                     break;
                 default:
@@ -133,7 +133,7 @@ namespace Celin.Pages
         {
             InitializeComponent();
             versionLookup.DataRequest = async args
-                => await ViewModel.E1.RequestAsync<F983051.Response>(new F983051.Request(args.Item1), args.Item2);
+                => await ViewModel.RequestAsync<F983051.Response>(new F983051.Request(args.Item1), args.Item2);
         }
     }
 }

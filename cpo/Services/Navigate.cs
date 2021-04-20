@@ -1,13 +1,10 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Celin.Services
 {
@@ -16,7 +13,7 @@ namespace Celin.Services
         public string Name { get; set; }
         public Symbol Symbol { get; set; }
         public string Tooltip { get; set; }
-        public Page Page { get; set; }
+        public Type Page { get; set; }
         #region IsEnabled
         public bool IsEnabled
         {
@@ -29,9 +26,10 @@ namespace Celin.Services
     }
     public class Navigate : DependencyObject
     {
+        public Frame ContentFrame { get; set; }
         public ObservableCollection<MenuItem> MenuItems = new ObservableCollection<MenuItem>
         {
-            new MenuItem { Name = "Browse", Symbol = Symbol.Home, Tooltip = "Open Orders", Page = new Pages.Browse() }
+            new MenuItem { Name = "Browse", Symbol = Symbol.Home, Tooltip = "Open Orders", Page = typeof(Pages.Browse) }
         };
         public Pages.Settings Settings { get; } = new Pages.Settings();
         #region CurrentPage
@@ -43,13 +41,33 @@ namespace Celin.Services
         public static readonly DependencyProperty CurrentPageProperty =
             DependencyProperty.Register(nameof(CurrentPage), typeof(Page), typeof(Navigate), new PropertyMetadata(default(Page)));
         #endregion
+        public void NavigateToPage(Type page, object para = null)
+        {
+            ContentFrame.Navigate(page, para, new EntranceNavigationTransitionInfo());
+        }
+        public void NavigateTo(NavigationView nav, NavigationViewItemInvokedEventArgs args)
+        {
+            if (args.IsSettingsInvoked)
+            {
+                ContentFrame.NavigateToType(typeof(Pages.Settings), null, new FrameNavigationOptions
+                {
+                    TransitionInfoOverride = new EntranceNavigationTransitionInfo(),
+                    IsNavigationStackEnabled = false
+                });
+            }
+            else
+            {
+                var m = nav.SelectedItem as MenuItem;
+                NavigateToPage(m.Page);
+            }
+        }
         public Navigate()
         {
             var settings = Ioc.Default.GetRequiredService<Doc.Settings>();
             if (settings.IsConfigured)
             {
                 foreach (var m in MenuItems) m.IsEnabled = true;
-                CurrentPage = MenuItems.First().Page;
+                //CurrentPage = MenuItems.First().Page;
             }
             else
             {

@@ -14,6 +14,49 @@ namespace Celin.Doc
 {
     public class Settings : ObservableRecipient
     {
+        #region Connection
+        bool authenticated;
+        public bool Authenticated
+        {
+            get => authenticated;
+            protected set => SetProperty(ref authenticated, value);
+        }
+        AIS.AuthResponse authResponse;
+        public AIS.AuthResponse AuthResponse 
+        {
+            get => authResponse;
+            protected set => SetProperty(ref authResponse, value);
+        }
+        public Task DefaultConfigurationAsync(CancellationToken cancel = default)
+        {
+            return E1.DefaultConfigurationAsync(cancel);
+        }
+        public async Task<bool> AuthenticateAsync(CancellationToken cancel = default)
+        {
+            if (await E1.IsValidSessionAsync(true, cancel))
+                return true;
+
+            try
+            {
+                await E1.AuthenticateAsync(cancel);
+                Authenticated = true;
+                AuthResponse = E1.AuthResponse;
+            }
+            catch (Exception)
+            {
+                Authenticated = false;
+                AuthResponse = default;
+            }
+            return Authenticated;
+        }
+        public Task<T> RequestAsync<T>(AIS.Request request, CancellationToken cancel = default)
+            where T: new()
+        {
+            return E1.RequestAsync<T>(request, cancel);
+        }
+        AIS.Server E1 { get; }
+        #endregion
+        #region Parameters
         public readonly Regex RxRequired = new Regex(".+");
         public readonly Regex RxUrl = new Regex(@"^https?:\/\/[^\s|\/]+\S*\/$");
         public readonly IEnumerable<string> RequiredMessages = new[]
@@ -99,8 +142,8 @@ namespace Celin.Doc
             Store.SetValue(nameof(Username), RememberUser ? Username : string.Empty);
             Store.SetValue(nameof(Password), RememberUser ? Password : string.Empty);
         }
-        public E1 E1 => Ioc.Default.GetRequiredService<E1>();
         IStore Store => Ioc.Default.GetRequiredService<IStore>();
+        #endregion
         public Settings()
         {
             baseUrl = Store.GetValue<string>(nameof(BaseUrl));
@@ -109,6 +152,9 @@ namespace Celin.Doc
             rememberUser = Store.GetValue<bool>(nameof(RememberUser));
             versionP4310 = Store.GetValue<string>(nameof(VersionP4310));
             isConfigured = Store.GetValue<bool>(nameof(IsConfigured));
+            E1 = new AIS.Server(baseUrl);
+            E1.AuthRequest.username = username;
+            E1.AuthRequest.password = password;
         }
     }
 }

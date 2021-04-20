@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Celin.Pages.NavContent"
+    x:Class="Celin.Pages.Navigation"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,19 +15,16 @@
                 Content="{x:Bind Name}"
                 IsEnabled="{x:Bind IsEnabled, Mode=OneWay}"
                 ToolTipService.ToolTip="{x:Bind Tooltip}">
-                <NavigationViewItem.Icon>
-                    <SymbolIcon Symbol="{x:Bind Symbol}" />
-                </NavigationViewItem.Icon>
             </NavigationViewItem>
         </DataTemplate>
     </Page.Resources>
 
     <NavigationView
         IsBackButtonVisible="Collapsed"
-        ItemInvoked="NavigationView_ItemInvoked"
+        ItemInvoked="{x:Bind Nav.NavigateTo}"
         MenuItemTemplate="{StaticResource Menu}"
         MenuItemsSource="{x:Bind Nav.MenuItems}"
-        PaneDisplayMode="LeftCompact">
-        <Frame x:Name="contentFrame" Content="{x:Bind Nav.CurrentPage, Mode=OneWay}" />
+        PaneDisplayMode="Top">
+        <Frame x:Name="ContentFrame" />
     </NavigationView>
 </Page>

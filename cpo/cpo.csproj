@@ -13,7 +13,8 @@
     <None Remove="Controls\StatusControl.xaml" />
     <None Remove="Controls\TextControl.xaml" />
     <None Remove="Pages\Browse.xaml" />
-    <None Remove="Pages\NavContent.xaml" />
+    <None Remove="Pages\Login.xaml" />
+    <None Remove="Pages\Navigation.xaml" />
     <None Remove="Pages\Settings.xaml" />
   </ItemGroup>
 
@@ -28,6 +29,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Celin.CPO\Celin.CPO.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Pages\Login.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="Pages\NavContent.xaml">
+    <Page Update="Pages\Navigation.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

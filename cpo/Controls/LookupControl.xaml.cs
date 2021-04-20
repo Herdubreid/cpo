@@ -18,7 +18,7 @@ namespace Celin
     {
         public DataTemplate ItemTemplate { get; set; }
         public string PlaceHolderText { get; set; }
-        public Func<(string, CancellationToken), Task<Helpers.ILookupResponse>> DataRequest { get; set; }
+        public Func<(string, CancellationToken), Task<ILookupResponse>> DataRequest { get; set; }
         public void SetLabel(string label, InfoBarSeverity severity = InfoBarSeverity.Informational)
         {
             Label = label;

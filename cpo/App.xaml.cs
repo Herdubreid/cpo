@@ -43,7 +43,6 @@ namespace Celin
                     .SetMinimumLevel(LogLevel.Information);
                 })
                 .AddSingleton<Services.IStore, Services.Store>()
-                .AddSingleton<Services.E1>()
                 .AddSingleton<Services.Navigate>()
                 .AddSingleton<Doc.Settings>()
                 .BuildServiceProvider());
